@@ -174,10 +174,10 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <dependency>
+<!--    <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-shaded-testing-util</artifactId>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-it</artifactId>

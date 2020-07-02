@@ -40,7 +40,7 @@
     <module>hbase-spark-protocol</module>
     <module>hbase-spark-protocol-shaded</module>
     <module>hbase-spark</module>
-    <module>hbase-spark-it</module>
+  <!--  <module>hbase-spark-it</module> -->
   </modules>
 
   <properties>

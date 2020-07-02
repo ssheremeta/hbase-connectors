@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.exceptions.DeserializationException;
 import org.apache.hadoop.hbase.filter.Filter.ReturnCode;
@@ -35,9 +34,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import scala.collection.mutable.MutableList;
-
 import org.apache.hbase.thirdparty.com.google.protobuf.ByteString;
 import org.apache.hbase.thirdparty.com.google.protobuf.InvalidProtocolBufferException;
 
@@ -109,7 +106,7 @@ public class SparkSQLPushDownFilter extends FilterBase{
   }
 
   @Override
-  public ReturnCode filterCell(final Cell c) throws IOException {
+  public ReturnCode filterKeyValue(final Cell c) throws IOException {
 
     //If the map RowValueMap is empty then we need to populate
     // the row key

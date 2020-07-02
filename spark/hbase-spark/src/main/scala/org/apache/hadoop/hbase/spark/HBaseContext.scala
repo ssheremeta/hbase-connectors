@@ -28,8 +28,8 @@ import org.apache.hadoop.hbase._
 import org.apache.hadoop.hbase.io.compress.Compression
 import org.apache.hadoop.hbase.io.compress.Compression.Algorithm
 import org.apache.hadoop.hbase.io.encoding.DataBlockEncoding
-import org.apache.hadoop.hbase.io.hfile.{HFile, CacheConfig, HFileContextBuilder, HFileWriterImpl}
-import org.apache.hadoop.hbase.regionserver.{HStore, HStoreFile, StoreFileWriter, BloomType}
+import org.apache.hadoop.hbase.io.hfile.{HFile, CacheConfig, HFileContextBuilder, AbstractHFileWriter}
+import org.apache.hadoop.hbase.regionserver.{HStore, StoreFile, BloomType}
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.broadcast.Broadcast
@@ -625,7 +625,7 @@ class HBaseContext(@transient val sc: SparkContext,
       }
       val defaultCompressionStr = config.get("hfile.compression",
         Compression.Algorithm.NONE.getName)
-      val hfileCompression = HFileWriterImpl
+      val hfileCompression = AbstractHFileWriter
         .compressionByName(defaultCompressionStr)
       val nowTimeStamp = System.currentTimeMillis()
       val tableRawName = tableName.getName
@@ -760,7 +760,7 @@ class HBaseContext(@transient val sc: SparkContext,
       }
       val defaultCompressionStr = config.get("hfile.compression",
         Compression.Algorithm.NONE.getName)
-      val defaultCompression = HFileWriterImpl
+      val defaultCompression = AbstractHFileWriter
         .compressionByName(defaultCompressionStr)
       val nowTimeStamp = System.currentTimeMillis()
       val tableRawName = tableName.getName
@@ -914,9 +914,9 @@ class HBaseContext(@transient val sc: SparkContext,
     //Add a '_' to the file name because this is a unfinished file.  A rename will happen
     // to remove the '_' when the file is closed.
     new WriterLength(0,
-      new StoreFileWriter.Builder(conf, new CacheConfig(tempConf), new HFileSystem(fs))
+      new StoreFile.WriterBuilder(conf, new CacheConfig(tempConf), new HFileSystem(fs))
         .withBloomType(BloomType.valueOf(familyOptions.bloomType))
-        .withComparator(CellComparator.getInstance()).withFileContext(hFileContext)
+        .withComparator(KeyValue.COMPARATOR).withFileContext(hFileContext)
         .withFilePath(new Path(familydir, "_" + UUID.randomUUID.toString.replaceAll("-", "")))
         .withFavoredNodes(favoredNodes).build())
 
@@ -1069,18 +1069,18 @@ class HBaseContext(@transient val sc: SparkContext,
    * @param compactionExclude      The exclude compaction metadata flag for the HFile
    */
   private def closeHFileWriter(fs:FileSystem,
-                               w: StoreFileWriter,
+                               w: StoreFile.Writer,
                                regionSplitPartitioner: BulkLoadPartitioner,
                                previousRow: Array[Byte],
                                compactionExclude: Boolean): Unit = {
     if (w != null) {
-      w.appendFileInfo(HStoreFile.BULKLOAD_TIME_KEY,
+      w.appendFileInfo(StoreFile.BULKLOAD_TIME_KEY,
         Bytes.toBytes(System.currentTimeMillis()))
-      w.appendFileInfo(HStoreFile.BULKLOAD_TASK_KEY,
+      w.appendFileInfo(StoreFile.BULKLOAD_TASK_KEY,
         Bytes.toBytes(regionSplitPartitioner.getPartition(previousRow)))
-      w.appendFileInfo(HStoreFile.MAJOR_COMPACTION_KEY,
+      w.appendFileInfo(StoreFile.MAJOR_COMPACTION_KEY,
         Bytes.toBytes(true))
-      w.appendFileInfo(HStoreFile.EXCLUDE_FROM_MINOR_COMPACTION_KEY,
+      w.appendFileInfo(StoreFile.EXCLUDE_FROM_MINOR_COMPACTION_KEY,
         Bytes.toBytes(compactionExclude))
       w.appendTrackedTimestampsToMetadata()
       w.close()
@@ -1106,7 +1106,7 @@ class HBaseContext(@transient val sc: SparkContext,
    * @param written The writer to be wrapped
    * @param writer  The number of bytes written to the writer
    */
-  class WriterLength(var written:Long, val writer:StoreFileWriter)
+  class WriterLength(var written:Long, val writer:StoreFile.Writer)
 }
 
 @InterfaceAudience.Private

@@ -59,7 +59,7 @@
     </license>
   </licenses>
   <modules>
-    <module>kafka</module>
+<!--    <module>kafka</module>-->
     <module>spark</module>
     <module>hbase-connectors-assembly</module>
   </modules>
@@ -129,7 +129,7 @@
     <compileSource>1.8</compileSource>
     <java.min.version>${compileSource}</java.min.version>
     <maven.min.version>3.5.0</maven.min.version>
-    <hbase.version>2.2.2</hbase.version>
+    <hbase.version>1.4.10</hbase.version>
     <exec.maven.version>1.6.0</exec.maven.version>
     <audience-annotations.version>0.5.0</audience-annotations.version>
     <junit.version>4.12</junit.version>
@@ -297,12 +297,12 @@
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
-      <dependency>
+<!--      <dependency>
         <groupId>org.apache.hbase</groupId>
         <artifactId>hbase-shaded-testing-util</artifactId>
         <version>${hbase.version}</version>
         <scope>test</scope>
-      </dependency>
+      </dependency>-->
     </dependencies>
   </dependencyManagement>
   <build>
@@ -428,7 +428,7 @@
             <configLocation>hbase/checkstyle.xml</configLocation>
             <suppressionsLocation>hbase/checkstyle-suppressions.xml</suppressionsLocation>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
-            <failOnViolation>true</failOnViolation>
+            <failOnViolation>false</failOnViolation>
           </configuration>
         </plugin>
       </plugins>

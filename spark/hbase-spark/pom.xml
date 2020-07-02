@@ -139,20 +139,26 @@
       <groupId>org.apache.yetus</groupId>
       <artifactId>audience-annotations</artifactId>
     </dependency>
-    <dependency>
+<!-- ssheremeta
+   <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-shaded-testing-util</artifactId>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-annotations</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
+<!-- ssheremeta
+<dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-shaded-mapreduce</artifactId>
       <version>${hbase.version}</version>
+    </dependency>-->
+    <dependency><!-- ssheremeta -->
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.avro</groupId>
